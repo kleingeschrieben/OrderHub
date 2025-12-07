@@ -5,6 +5,7 @@ import de.maxpru.orderhub.dto.ProductRequest;
 import de.maxpru.orderhub.dto.ProductResponse;
 import de.maxpru.orderhub.mapper.ProductMapper;
 import de.maxpru.orderhub.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,13 +43,13 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductResponse createProduct(@RequestBody ProductRequest product) {
+    public ProductResponse createProduct(@RequestBody @Valid ProductRequest product) {
         Product createdProduct = this.productService.createProduct(ProductMapper.toProduct(null, product));
         return ProductMapper.toProductResponse(createdProduct);
     }
 
     @PutMapping("/{productId}")
-    public ProductResponse updateProduct(@PathVariable("productId") long productId, @RequestBody ProductRequest product) {
+    public ProductResponse updateProduct(@PathVariable("productId") long productId, @RequestBody @Valid ProductRequest product) {
         Product productToUpdate = ProductMapper.toProduct(productId, product);
         Product updatedProduct = this.productService.updateProduct(productId, productToUpdate);
         return ProductMapper.toProductResponse(updatedProduct);
