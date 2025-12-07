@@ -5,19 +5,12 @@ import de.maxpru.orderhub.domain.OrderItem;
 import de.maxpru.orderhub.domain.Product;
 import de.maxpru.orderhub.dto.OrderItemRequest;
 import de.maxpru.orderhub.dto.OrderItemResponse;
-import de.maxpru.orderhub.dto.OrderRequest;
 import de.maxpru.orderhub.dto.OrderResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrderMapper {
-
-    public static Order toOrder(OrderRequest request) {
-        Order order = new Order();
-        order.setUserId(request.getUserId());
-        return order;
-    }
 
     public static OrderItem toOrderItem(Product product, OrderItemRequest request) {
         OrderItem item = new OrderItem();

@@ -3,22 +3,33 @@ package de.maxpru.orderhub.service;
 import de.maxpru.orderhub.domain.Product;
 import de.maxpru.orderhub.exceptions.ProductNotFoundException;
 import de.maxpru.orderhub.repositories.ProductRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
+@Transactional
 public class ProductService {
 
     private final ProductRepository productRepository;
+
+    private static final int MAX_PAGE_SIZE = 50;
+    private static final int DEFAULT_PAGE_SIZE = 10;
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    // TODO ADD PAGINATION
-    public List<Product> findAllProducts() {
-        return productRepository.findAll();
+    public Page<Product> findAllProducts(int page, int size) {
+        if (page < 0) page = 0;
+        if (size < 1) size = DEFAULT_PAGE_SIZE;
+        else if (size > MAX_PAGE_SIZE) size = MAX_PAGE_SIZE;
+
+        Pageable pageable = PageRequest.of(page, size);
+        return productRepository.findAll(pageable);
     }
 
     public Product findProductById(Long productId) {
@@ -37,6 +48,12 @@ public class ProductService {
         foundProduct.setPrice(changes.getPrice());
         foundProduct.setStock(changes.getStock());
         return productRepository.save(foundProduct);
+    }
+
+    public void updateStock(Long productId, int stock) {
+        Product foundProduct = findProductById(productId);
+        foundProduct.setStock(stock);
+        productRepository.save(foundProduct);
     }
 
     public void deleteProductById(Long productId) {

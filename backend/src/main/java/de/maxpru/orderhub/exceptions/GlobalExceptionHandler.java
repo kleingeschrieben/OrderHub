@@ -2,6 +2,7 @@ package de.maxpru.orderhub.exceptions;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -11,11 +12,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(OrderHubException.class)
-    public ResponseEntity<?> handleOrderHubExceptionException(OrderHubException ex) {
+    public ResponseEntity<ErrorResponse> handleOrderHubExceptionException(OrderHubException ex) {
+        log.error(ex.getMessage(), ex);
         return buildErrorResponse(ex.getErrorCode(), ex.getMessage(), ex.getHttpStatus());
     }
 
@@ -28,7 +31,7 @@ public class GlobalExceptionHandler {
         if (error != null) {
             message = error.getField() + " " + error.getDefaultMessage();
         }
-
+        log.warn(ex.getMessage(), ex);
         return buildErrorResponse("VALIDATION_FAILED", message, HttpStatus.BAD_REQUEST);
     }
 
@@ -45,8 +48,14 @@ public class GlobalExceptionHandler {
         if (violation != null) {
             message = violation.getPropertyPath() + " " + violation.getMessage();
         }
-
+        log.warn(ex.getMessage(), ex);
         return buildErrorResponse("VALIDATION_FAILED", message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception ex) {
+        log.error("Unexpected error", ex);
+        return buildErrorResponse("INTERNAL_ERROR", "An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private ResponseEntity<ErrorResponse> buildErrorResponse(String errorCode, String message, HttpStatus status) {
