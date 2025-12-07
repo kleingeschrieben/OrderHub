@@ -1,10 +1,9 @@
 package de.maxpru.orderhub.service;
 
 import de.maxpru.orderhub.domain.Product;
+import de.maxpru.orderhub.exceptions.ProductNotFoundException;
 import de.maxpru.orderhub.repositories.ProductRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class ProductService {
     }
 
     public Product findProductById(long productId) {
-        return productRepository.findById(productId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
     }
 
     public Product createProduct(Product product) {
@@ -41,7 +40,8 @@ public class ProductService {
     }
 
     public void deleteProductById(long id) {
-        productRepository.deleteById(id);
+        Product existing = findProductById(id);
+        productRepository.delete(existing);
     }
 
 }
