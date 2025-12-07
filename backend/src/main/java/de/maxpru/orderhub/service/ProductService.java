@@ -21,7 +21,7 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product findProductById(long productId) {
+    public Product findProductById(Long productId) {
         return productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
     }
 
@@ -31,7 +31,7 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Product updateProduct(long productId, Product changes) {
+    public Product updateProduct(Long productId, Product changes) {
         Product foundProduct = findProductById(productId);
         foundProduct.setName(changes.getName());
         foundProduct.setPrice(changes.getPrice());
@@ -39,8 +39,8 @@ public class ProductService {
         return productRepository.save(foundProduct);
     }
 
-    public void deleteProductById(long id) {
-        Product existing = findProductById(id);
+    public void deleteProductById(Long productId) {
+        Product existing = findProductById(productId);
         productRepository.delete(existing);
     }
 
