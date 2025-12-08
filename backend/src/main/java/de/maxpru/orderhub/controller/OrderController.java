@@ -7,6 +7,7 @@ import de.maxpru.orderhub.mapper.OrderMapper;
 import de.maxpru.orderhub.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
+@Tag(name = "Orders", description = "Operations for managing orders")
 public class OrderController {
 
     private final OrderService orderService;

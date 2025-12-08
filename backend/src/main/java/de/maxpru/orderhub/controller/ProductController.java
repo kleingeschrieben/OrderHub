@@ -27,7 +27,6 @@ public class ProductController {
         this.productService = productService;
     }
 
-    // TODO ADD PAGINATION
     @GetMapping
     @Operation(summary = "List products", description = "Returns a paginated list of products")
     public List<ProductResponse> findAllProducts(@Parameter(description = "Page index (0-based)") @RequestParam(required = false, defaultValue = "0") int page,@Parameter(description = "Page size") @RequestParam(required = false, defaultValue = "20") int size) {
