@@ -14,9 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -35,17 +37,30 @@ public class OrderService {
         this.productService = productService;
     }
 
-    public Page<Order> findAllOrders(int page, int size) {
+    public Page<Order> findAllOrders(int page, int size, Authentication authentication) {
         if (page < 0) page = 0;
         if (size < 1) size = DEFAULT_PAGE_SIZE;
         else if (size > MAX_PAGE_SIZE) size = MAX_PAGE_SIZE;
 
         Pageable pageable = PageRequest.of(page, size);
-        return orderRepository.findAll(pageable);
+
+        String username = authentication.getName();
+        boolean isAdmin = isAdmin(authentication);
+
+        if (isAdmin) {
+            return orderRepository.findAll(pageable);
+        } else {
+            return orderRepository.findAllByUserId(username, pageable);
+        }
     }
 
-    public Order findOrderById(Long orderId) {
-        return orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
+    public Order findOrderById(Long orderId, Authentication authentication) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
+        String username = authentication.getName();
+        if (!isAdmin(authentication) && !username.equals(order.getUserId())) {
+            throw new AccessDeniedException("Not allowed to access this order");
+        }
+        return order;
     }
 
     public Order createOrder(OrderRequest request, String userId) {
@@ -54,17 +69,24 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public Order updateOrder(Long orderId, OrderRequest request, String userId) {
-        Order existing = findOrderById(orderId);
+    public Order updateOrder(Long orderId, OrderRequest request, Authentication authentication) {
+        Order existing = findOrderById(orderId, authentication);
+        String userId = existing.getUserId();
         updateOrderFromRequest(existing, request, userId);
         return orderRepository.save(existing);
     }
 
+    public void deleteOrderById(Long orderId, Authentication authentication) {
+        Order existing = findOrderById(orderId, authentication);
+        orderRepository.delete(existing);
+    }
+
     private void updateOrderFromRequest(Order order, OrderRequest request, String userId) {
         order.setUserId(userId);
-        order.getOrderItems().clear();
 
-        List<OrderItem> items = new ArrayList<>();
+        List<OrderItem> items = order.getOrderItems();
+        items.clear();
+
         double totalPrice = 0.0;
 
         for (OrderItemRequest itemRequest : request.getItems()) {
@@ -83,12 +105,12 @@ public class OrderService {
             totalPrice += item.getPrice();
         }
 
-        order.setOrderItems(items);
         order.setTotalPrice(totalPrice);
     }
 
-    public void deleteOrderById(Long orderId) {
-        Order existing = findOrderById(orderId);
-        orderRepository.delete(existing);
+    private boolean isAdmin(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(a -> a.equals("ROLE_ADMIN"));
     }
 }

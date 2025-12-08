@@ -1,5 +1,5 @@
 import {useEffect, useState, type FormEvent} from "react";
-import {ProductsService, type ProductRequest, type ProductResponse} from "./generated-api";
+import {ProductsService, type ProductRequest, type ProductResponse} from "../../generated-api";
 
 type ProductModalProps = {
     open: boolean;

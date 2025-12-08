@@ -15,8 +15,6 @@ public class ProductRequest {
     private String name;
     @Positive
     private double price;
-
-    // FBK
     @PositiveOrZero
     private int stock;
 }

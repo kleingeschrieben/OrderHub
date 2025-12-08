@@ -1,8 +1,9 @@
 import { type FormEvent, useState } from "react";
-import {AuthService, OpenAPI} from "./generated-api";
+import { AuthService, OpenAPI, type LoginResponse } from "../../generated-api";
+import type { AuthState } from "../../models/AuthCredentials.ts";
 
 type LoginPageProps = {
-    onLogin: (auth: { username: string; password: string }) => void;
+    onLogin: (auth: AuthState) => void;
 };
 
 function LoginPage({ onLogin }: LoginPageProps) {
@@ -20,8 +21,12 @@ function LoginPage({ onLogin }: LoginPageProps) {
         OpenAPI.PASSWORD = password;
 
         try {
-            await AuthService.login();
-            onLogin({ username, password });
+            const loginResponse: LoginResponse = await AuthService.login();
+            onLogin({
+                username: loginResponse.username ?? username,
+                password,
+                roles: loginResponse.roles ?? []
+            });
         } catch {
             setError("Login failed. Please check your credentials.");
             OpenAPI.USERNAME = undefined;
@@ -39,17 +44,13 @@ function LoginPage({ onLogin }: LoginPageProps) {
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label className="form-label">Username</label>
-                        <input type="text" className="form-control" value={username} onChange={(event) => setUsername(event.target.value)} required/>
+                        <input type="text" className="form-control" value={username} onChange={(event) => setUsername(event.target.value)} required />
                     </div>
-
                     <div className="mb-3">
                         <label className="form-label">Password</label>
-                        <input type="password" className="form-control" value={password} onChange={(event) => setPassword(event.target.value)} required/>
+                        <input type="password" className="form-control" value={password} onChange={(event) => setPassword(event.target.value)} required />
                     </div>
-
-                    <button type="submit" className="btn btn-primary w-100" disabled={loading}>
-                        {loading ? "Login..." : "Login"}
-                    </button>
+                    <button type="submit" className="btn btn-primary w-100" disabled={loading}>{loading ? "Login..." : "Login"}</button>
                 </form>
             </div>
         </div>
