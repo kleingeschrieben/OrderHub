@@ -27,11 +27,10 @@ public class ProductController {
         this.productService = productService;
     }
 
-    // TODO ADD PAGINATION
     @GetMapping
     @Operation(summary = "List products", description = "Returns a paginated list of products")
-    public List<ProductResponse> findAllProducts(@Parameter(description = "Page index (0-based)") @RequestParam(required = false, defaultValue = "0") int page,@Parameter(description = "Page size") @RequestParam(required = false, defaultValue = "20") int size) {
-        Page<Product> products = this.productService.findAllProducts(page, size);
+    public List<ProductResponse> findAllProducts(@Parameter(description = "Page index (0-based)") @RequestParam(required = false, defaultValue = "0") int page, @Parameter(description = "Page size") @RequestParam(required = false, defaultValue = "20") int size, @Parameter(description = "Search term for product name") @RequestParam(required = false) String search) {
+        Page<Product> products = this.productService.findAllProducts(page, size, search);
         List<ProductResponse> productResponses = new ArrayList<>();
 
         for (Product product : products) {

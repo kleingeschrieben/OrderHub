@@ -23,17 +23,22 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Page<Product> findAllProducts(int page, int size) {
+    public Page<Product> findAllProducts(int page, int size, String search) {
         if (page < 0) page = 0;
         if (size < 1) size = DEFAULT_PAGE_SIZE;
         else if (size > MAX_PAGE_SIZE) size = MAX_PAGE_SIZE;
 
         Pageable pageable = PageRequest.of(page, size);
-        return productRepository.findAll(pageable);
+
+        if (search == null || search.isBlank()) {
+            return productRepository.findAllByDeletedFalse(pageable);
+        }
+
+        return productRepository.findAllByDeletedFalseAndNameContainingIgnoreCase(search, pageable);
     }
 
     public Product findProductById(Long productId) {
-        return productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
+        return productRepository.findByIdAndDeletedFalse(productId).orElseThrow(() -> new ProductNotFoundException(productId));
     }
 
     public Product createProduct(Product product) {
@@ -58,7 +63,8 @@ public class ProductService {
 
     public void deleteProductById(Long productId) {
         Product existing = findProductById(productId);
-        productRepository.delete(existing);
+        existing.setDeleted(true);
+        productRepository.save(existing);
     }
 
 }

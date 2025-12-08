@@ -21,11 +21,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
-                                "/swagger-ui/**"
+                                "/swagger-ui/**",
+                                "/h2-console/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/**").authenticated()
                         .requestMatchers("/api/products/**").hasRole("ADMIN")
@@ -38,8 +40,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-
-    // TODO Hardcode bcrypt string
 
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
