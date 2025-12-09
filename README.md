@@ -64,10 +64,19 @@ cd backend
 mvn clean install
 ```
 
-Then start the application for local development:
+Then start the application for local development from your IDE.
+
+For example in IntelliJ IDEA:
+
+- Open the `backend` project/module.
+- Locate the main Spring Boot class (e.g. `OrderHubApplication`).
+- Run it using the green "Run" button.
+
+Alternatively, you can start the packaged JAR from the `target` directory:
 
 ```bash
-mvn spring-boot:run
+cd backend/target
+java -jar orderhub-0.0.1.jar
 ```
 
 The backend runs on: `http://localhost:1337`
@@ -114,4 +123,5 @@ The frontend runs on e.g. `http://localhost:5173` (depending on Vite config).
 - **User** → `user` / `user`
 
 Login is done via the React login page; credentials are applied to the generated API client.
+
 
