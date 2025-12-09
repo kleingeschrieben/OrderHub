@@ -1,4 +1,4 @@
-package de.maxpru.orderhub.service;
+package de.maxpru.orderhub;
 
 import de.maxpru.orderhub.domain.Order;
 import de.maxpru.orderhub.domain.OrderItem;
@@ -7,6 +7,8 @@ import de.maxpru.orderhub.dto.OrderItemRequest;
 import de.maxpru.orderhub.dto.OrderRequest;
 import de.maxpru.orderhub.exceptions.InsufficientStockException;
 import de.maxpru.orderhub.repositories.OrderRepository;
+import de.maxpru.orderhub.service.OrderService;
+import de.maxpru.orderhub.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
