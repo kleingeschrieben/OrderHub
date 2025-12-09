@@ -77,6 +77,9 @@ Useful endpoints:
 - Swagger UI: `http://localhost:1337/swagger-ui/index.html`
 - OpenAPI JSON: `http://localhost:1337/v3/api-docs`
 - H2 Console: `http://localhost:1337/h2-console`
+  - JDBC URL: `jdbc:h2:file:./data/orderhub-db`  
+  - User: `sa`  
+  - Password: *(empty)*
 
 #### Database (H2) and Sample Data
 
@@ -111,3 +114,4 @@ The frontend runs on e.g. `http://localhost:5173` (depending on Vite config).
 - **User** → `user` / `user`
 
 Login is done via the React login page; credentials are applied to the generated API client.
+
