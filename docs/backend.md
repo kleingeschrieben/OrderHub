@@ -39,3 +39,17 @@ The backend is built with **Spring Boot 4** and exposes a REST API for managing 
     - `springdoc-openapi-maven-plugin`
         - Generates `target/openapi/openapi.json` during `mvn clean install`.
         - This file is used by the frontend to generate the TypeScript API client.
+
+## Testing
+
+- **JUnit 5 + spring-boot-starter-test**
+    - Basic unit tests are located under `src/test/java`.
+    - Example: `OrderServiceTest` tests the core order logic:
+        - successful order creation (items, total price, stock update),
+        - insufficient stock scenario (throws `InsufficientStockException` and does not persist the order).
+    - Tests can be executed via:
+
+      ```bash
+      cd backend
+      mvn test
+      ```

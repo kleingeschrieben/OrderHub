@@ -12,6 +12,7 @@ All generated code and text was **manually reviewed, adapted and integrated** by
 - Spring Security configuration  
   (HTTP Basic setup, role-based access rules, H2 console access).
 - Structure of the `GlobalExceptionHandler` and JSON error format.
+- Support in designing and implementing the two example unit tests for `OrderService`
 
 ### Frontend
 

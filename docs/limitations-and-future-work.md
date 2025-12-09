@@ -32,7 +32,7 @@ This document lists the main limitations of the current implementation and possi
 
 ### Testing
 
-- No automated tests (unit/integration/end-to-end) are included.
+- Not enough automated tests are included.
 - The system has been verified manually via the UI and Swagger.
 
 ---
@@ -56,7 +56,7 @@ This document lists the main limitations of the current implementation and possi
 
 ### Quality & Operations
 
-- Add **unit tests** for service and controller layers.
+- Add more **unit tests** for service and controller layers.
 - Add **frontend tests** (component or E2E tests).
 - Introduce Docker setup for backend + frontend.
 - Set up a CI pipeline (build, tests, linting).
